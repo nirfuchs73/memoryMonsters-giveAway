@@ -1,3 +1,14 @@
+//Get userName
+var userName = localStorage.getItem('userName');
+if (userName === null) {
+    userName = prompt("Please enter your name", "Anonymous");
+    if (userName !== null) {
+        localStorage.setItem('userName', userName);
+    }
+}
+//Update page
+document.querySelector('.userName').innerHTML = "User Name: " + userName;
+
 // Those are global variables, they stay alive and reflect the state of the game
 var elPreviousCard = null;
 var flippedCouplesCount = 0;
@@ -31,7 +42,7 @@ function cardClicked(elCard) {
         var card2 = elCard.getAttribute('data-card');
 
         // No match, schedule to flip them back in 1 second
-        if (card1 !== card2){
+        if (card1 !== card2) {
             setTimeout(function () {
                 elCard.classList.remove('flipped');
                 elPreviousCard.classList.remove('flipped');
@@ -54,10 +65,14 @@ function cardClicked(elCard) {
                 //play right sound
                 audioRight.play();
             }
-
         }
-
     }
+}
 
-
+function changeUser() {
+    userName = prompt("Please enter your name", "Anonymous");
+    if (userName !== null) {
+        localStorage.setItem('userName', userName);
+        document.querySelector('.userName').innerHTML = "User Name: " + userName;
+    }
 }
