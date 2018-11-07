@@ -1,0 +1,11 @@
+.header {
+    background-color: lightgoldenrodyellow;
+    padding: 1px;
+    color:blueviolet;
+    font-size: 1em;
+    text-align: left;
+}
+
+.header img {
+    float: right;
+}
