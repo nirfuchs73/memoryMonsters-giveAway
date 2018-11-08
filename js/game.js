@@ -9,6 +9,16 @@ if (userName === null) {
 //Update page
 document.querySelector('.userName').innerHTML = "User Name: " + userName;
 
+//Get bestTime
+var bestTime = localStorage.getItem('bestTime');
+//Update page
+if (bestTime !== null) {
+    var min = Math.floor((bestTime / 1000 / 60) << 0);
+    var sec = Math.floor((bestTime / 1000) % 60);
+    document.querySelector('.bestTime').innerHTML = "Best Time: " + min + " Minutes " + sec + " Seconds";
+}
+
+
 //Hide Play Again button
 document.getElementById('playAgain').style.display = 'none';
 
@@ -16,6 +26,9 @@ document.getElementById('playAgain').style.display = 'none';
 var elPreviousCard = null;
 var flippedCouplesCount = 0;
 var isProcessing = false;
+var firstClick = true;
+var startTime = 0;
+var endTime = 0;
 
 // This is a constant that we dont change during the game (we mark those with CAPITAL letters)
 var TOTAL_COUPLES_COUNT = 3;
@@ -28,6 +41,11 @@ var audioWrong = new Audio('sound/wrong.mp3');
 
 // This function is called whenever the user click a card
 function cardClicked(elCard) {
+    //If first click
+    if (firstClick === true) {
+        startTime = Date.now();
+        firstClick = false;
+    }
 
     if (isProcessing === true) {
         return;
@@ -73,6 +91,15 @@ function cardClicked(elCard) {
                 audioWin.play();
                 //Display Play Again button
                 document.getElementById('playAgain').style.display = 'inline-block';
+                endTime = Date.now();
+                var ms = endTime - startTime;
+                bestTime = localStorage.getItem('bestTime');
+                if (bestTime === null || ms < bestTime) {
+                    localStorage.setItem('bestTime', ms);
+                    var min = Math.floor((ms / 1000 / 60) << 0);
+                    var sec = Math.floor((ms / 1000) % 60);
+                    document.querySelector('.bestTime').innerHTML = "Best Time: " + min + " Minutes " + sec + " Seconds";
+                }
             } else {
                 //play right sound
                 audioRight.play();
@@ -94,6 +121,9 @@ function playAgain() {
     elPreviousCard = null;
     flippedCouplesCount = 0;
     isProcessing = false;
+    firstClick = true;
+    startTime = 0;
+    endTime = 0;
     //flip all the cards
     var cards = document.getElementsByClassName("card");
     for (var i = 0; i < cards.length; ++i) {
