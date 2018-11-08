@@ -15,6 +15,7 @@ document.getElementById('playAgain').style.display = 'none';
 // Those are global variables, they stay alive and reflect the state of the game
 var elPreviousCard = null;
 var flippedCouplesCount = 0;
+var isProcessing = false;
 
 // This is a constant that we dont change during the game (we mark those with CAPITAL letters)
 var TOTAL_COUPLES_COUNT = 3;
@@ -27,6 +28,10 @@ var audioWrong = new Audio('sound/wrong.mp3');
 
 // This function is called whenever the user click a card
 function cardClicked(elCard) {
+
+    if (isProcessing === true) {
+        return;
+    }
 
     // If the user clicked an already flipped card - do nothing and return from the function
     if (elCard.classList.contains('flipped')) {
@@ -46,12 +51,14 @@ function cardClicked(elCard) {
 
         // No match, schedule to flip them back in 1 second
         if (card1 !== card2) {
+            isProcessing = true;
             setTimeout(function () {
                 elCard.classList.remove('flipped');
                 elPreviousCard.classList.remove('flipped');
                 elPreviousCard = null;
                 //play wrong sound
                 audioWrong.play();
+                isProcessing = false;
             }, 1000)
 
         } else {
@@ -86,6 +93,7 @@ function playAgain() {
     //reset variables
     elPreviousCard = null;
     flippedCouplesCount = 0;
+    isProcessing = false;
     //flip all the cards
     var cards = document.getElementsByClassName("card");
     for (var i = 0; i < cards.length; ++i) {
