@@ -9,6 +9,9 @@ if (userName === null) {
 //Update page
 document.querySelector('.userName').innerHTML = "User Name: " + userName;
 
+//Hide Play Again button
+document.getElementById('playAgain').style.display = 'none';
+
 // Those are global variables, they stay alive and reflect the state of the game
 var elPreviousCard = null;
 var flippedCouplesCount = 0;
@@ -61,6 +64,8 @@ function cardClicked(elCard) {
             if (TOTAL_COUPLES_COUNT === flippedCouplesCount) {
                 //play win sound
                 audioWin.play();
+                //Display Play Again button
+                document.getElementById('playAgain').style.display = 'inline-block';
             } else {
                 //play right sound
                 audioRight.play();
@@ -75,4 +80,17 @@ function changeUser() {
         localStorage.setItem('userName', userName);
         document.querySelector('.userName').innerHTML = "User Name: " + userName;
     }
+}
+
+function playAgain() {
+    //reset variables
+    elPreviousCard = null;
+    flippedCouplesCount = 0;
+    //flip all the cards
+    var cards = document.getElementsByClassName("card");
+    for (var i = 0; i < cards.length; ++i) {
+        cards[i].classList.remove('flipped');
+    }
+    //Hide Play Again button
+    document.getElementById('playAgain').style.display = 'none';
 }
