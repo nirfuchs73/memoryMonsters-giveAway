@@ -22,6 +22,9 @@ if (bestTime !== null) {
 //Hide Play Again button
 document.getElementById('playAgain').style.display = 'none';
 
+//Shuffle Cards
+shuffleCards();
+
 // Those are global variables, they stay alive and reflect the state of the game
 var elPreviousCard = null;
 var flippedCouplesCount = 0;
@@ -129,6 +132,15 @@ function playAgain() {
     for (var i = 0; i < cards.length; ++i) {
         cards[i].classList.remove('flipped');
     }
+    //Shuffle Cards
+    shuffleCards();
     //Hide Play Again button
     document.getElementById('playAgain').style.display = 'none';
+}
+
+function shuffleCards() {
+    var board = document.querySelector('.board');
+    for (var i = board.children.length; i >= 0; i--) {
+        board.appendChild(board.children[Math.random() * i | 0]);
+    }
 }
