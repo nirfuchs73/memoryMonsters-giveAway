@@ -1,11 +1,21 @@
 .header {
     background-color: lightgoldenrodyellow;
     padding: 1px;
+    margin: 1px;
+    border: 2px solid blue;
+    width: auto;
+    height: auto;
+    border-radius: 15px;
     color:blueviolet;
     font-size: 1em;
     text-align: left;
+    transition: background-color 2s;
 }
 
-.header img {
-    float: right;
+table, tr, th, td {
+    border: 1px solid black;
+ }
+
+ div:hover {
+    background-color: orange;
 }

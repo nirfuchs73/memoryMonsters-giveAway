@@ -1,3 +1,7 @@
-function buttonClicked() {
-    alert('This is a test');
+function OKClicked() {
+    alert('OK');
+}
+
+function cancelClicked() {
+    alert('Cancel');
 }
