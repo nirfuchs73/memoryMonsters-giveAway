@@ -13,9 +13,20 @@ document.querySelector('.userName').innerHTML = "User Name: " + userName;
 var bestTime = localStorage.getItem('bestTime');
 //Update page
 if (bestTime !== null) {
-    var min = Math.floor((bestTime / 1000 / 60) << 0);
-    var sec = Math.floor((bestTime / 1000) % 60);
-    document.querySelector('.bestTime').innerHTML = "Best Time: " + min + " Minutes " + sec + " Seconds";
+    var hours = Math.floor(bestTime / 1000 / 60 / 60);
+    var mins = Math.floor(bestTime / 1000 / 60);
+    var secs = Math.floor((bestTime / 1000) % 60);
+    var tenths = Math.floor((bestTime / 100) % 10);
+    if (hours < 10) {
+        hours = "0" + hours;
+    }
+    if (mins < 10) {
+        mins = "0" + mins;
+    }
+    if (secs < 10) {
+        secs = "0" + secs;
+    }
+    document.querySelector('.bestTime').innerHTML = "Best Time: " + hours + ":" + mins + ":" + secs + ":" + tenths + "0";
 }
 
 
@@ -30,8 +41,8 @@ var elPreviousCard = null;
 var flippedCouplesCount = 0;
 var isProcessing = false;
 var firstClick = true;
-var startTime = 0;
-var endTime = 0;
+var msStartTime = 0;
+var msEndTime = 0;
 
 // This is a constant that we dont change during the game (we mark those with CAPITAL letters)
 var TOTAL_COUPLES_COUNT = 3;
@@ -46,8 +57,9 @@ var audioWrong = new Audio('sound/wrong.mp3');
 function cardClicked(elCard) {
     //If first click
     if (firstClick === true) {
-        startTime = Date.now();
+        msStartTime = Date.now();
         firstClick = false;
+        startTime();
     }
 
     if (isProcessing === true) {
@@ -94,14 +106,26 @@ function cardClicked(elCard) {
                 audioWin.play();
                 //Display Play Again button
                 document.getElementById('playAgain').style.display = 'inline-block';
-                endTime = Date.now();
-                var ms = endTime - startTime;
+                stopTime();
+                msEndTime = Date.now();
+                var ms = msEndTime - msStartTime;
                 bestTime = localStorage.getItem('bestTime');
                 if (bestTime === null || ms < bestTime) {
                     localStorage.setItem('bestTime', ms);
-                    var min = Math.floor((ms / 1000 / 60) << 0);
-                    var sec = Math.floor((ms / 1000) % 60);
-                    document.querySelector('.bestTime').innerHTML = "Best Time: " + min + " Minutes " + sec + " Seconds";
+                    var hours = Math.floor(ms / 1000 / 60 / 60);
+                    var mins = Math.floor(ms / 1000 / 60);
+                    var secs = Math.floor((ms / 1000) % 60);
+                    var tenths = Math.floor((ms / 100) % 10);
+                    if (hours < 10) {
+                        hours = "0" + hours;
+                    }
+                    if (mins < 10) {
+                        mins = "0" + mins;
+                    }
+                    if (secs < 10) {
+                        secs = "0" + secs;
+                    }
+                    document.querySelector('.bestTime').innerHTML = "Best Time: " + hours + ":" + mins + ":" + secs + ":" + tenths + "0";
                 }
             } else {
                 //play right sound
@@ -125,8 +149,8 @@ function playAgain() {
     flippedCouplesCount = 0;
     isProcessing = false;
     firstClick = true;
-    startTime = 0;
-    endTime = 0;
+    msStartTime = 0;
+    msEndTime = 0;
     //flip all the cards
     var cards = document.getElementsByClassName("card");
     for (var i = 0; i < cards.length; ++i) {
@@ -136,6 +160,7 @@ function playAgain() {
     shuffleCards();
     //Hide Play Again button
     document.getElementById('playAgain').style.display = 'none';
+    resetTime();
 }
 
 function shuffleCards() {
@@ -144,3 +169,51 @@ function shuffleCards() {
         board.appendChild(board.children[Math.random() * i | 0]);
     }
 }
+
+var time = 0;
+var running = false;
+
+function startTime() {
+    if (running === false) {
+        running = true;
+        incrementTime();
+        //} else {
+        //    running = 0;
+        //}
+    }
+}
+
+
+function stopTime() {
+    running = false;
+}
+
+function resetTime() {
+    running = false;
+    time = 0;
+    document.getElementById("output").innerHTML = "Time: 00:00:00:00";
+}
+
+function incrementTime() {
+    if (running === true) {
+        setTimeout(function () {
+            time++;
+            var hours = Math.floor(time / 10 / 60 / 60);
+            var mins = Math.floor(time / 10 / 60);
+            var secs = Math.floor(time / 10 % 60);
+            var tenths = time % 10;
+            if (hours < 10) {
+                hours = "0" + hours;
+            }
+            if (mins < 10) {
+                mins = "0" + mins;
+            }
+            if (secs < 10) {
+                secs = "0" + secs;
+            }
+            document.getElementById("output").innerHTML = "Time: " + hours + ":" + mins + ":" + secs + ":" + tenths + "0";
+            incrementTime();
+        }, 100)
+    }
+}
+
