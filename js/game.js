@@ -7,7 +7,7 @@ if (userName === null) {
     }
 }
 //Update page
-document.querySelector('.userName').innerHTML = "User Name: " + userName;
+document.getElementById("userName").innerHTML = "User Name: " + userName;
 
 //Get bestTime
 var bestTime = localStorage.getItem('bestTime');
@@ -107,7 +107,7 @@ function changeUser() {
     userName = prompt("Please enter your name", "Anonymous");
     if (userName !== null) {
         localStorage.setItem('userName', userName);
-        document.querySelector('.userName').innerHTML = "User Name: " + userName;
+        document.getElementById("userName").innerHTML = "User Name: " + userName;
     }
 }
 
@@ -192,6 +192,7 @@ function incrementTime() {
 
 function secondsToTime(seconds) {
     var hrs = Math.floor(seconds / 60 / 60);
+    seconds = seconds - (hrs * 60 * 60);
     var mins = Math.floor(seconds / 60);
     var secs = Math.floor(seconds % 60);
     if (hrs < 10) {
