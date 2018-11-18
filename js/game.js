@@ -13,22 +13,8 @@ document.querySelector('.userName').innerHTML = "User Name: " + userName;
 var bestTime = localStorage.getItem('bestTime');
 //Update page
 if (bestTime !== null) {
-    var hours = Math.floor(bestTime / 1000 / 60 / 60);
-    var mins = Math.floor(bestTime / 1000 / 60);
-    var secs = Math.floor((bestTime / 1000) % 60);
-    var tenths = Math.floor((bestTime / 100) % 10);
-    if (hours < 10) {
-        hours = "0" + hours;
-    }
-    if (mins < 10) {
-        mins = "0" + mins;
-    }
-    if (secs < 10) {
-        secs = "0" + secs;
-    }
-    document.querySelector('.bestTime').innerHTML = "Best Time: " + hours + ":" + mins + ":" + secs + ":" + tenths + "0";
+    document.getElementById("bestTime").innerHTML = "Best Time: " + secondsToTime(bestTime);
 }
-
 
 //Hide Play Again button
 document.getElementById('playAgain').style.display = 'none';
@@ -41,8 +27,6 @@ var elPreviousCard = null;
 var flippedCouplesCount = 0;
 var isProcessing = false;
 var firstClick = true;
-var msStartTime = 0;
-var msEndTime = 0;
 
 // This is a constant that we dont change during the game (we mark those with CAPITAL letters)
 var TOTAL_COUPLES_COUNT = 3;
@@ -57,7 +41,6 @@ var audioWrong = new Audio('sound/wrong.mp3');
 function cardClicked(elCard) {
     //If first click
     if (firstClick === true) {
-        msStartTime = Date.now();
         firstClick = false;
         startTime();
     }
@@ -107,25 +90,10 @@ function cardClicked(elCard) {
                 //Display Play Again button
                 document.getElementById('playAgain').style.display = 'inline-block';
                 stopTime();
-                msEndTime = Date.now();
-                var ms = msEndTime - msStartTime;
                 bestTime = localStorage.getItem('bestTime');
-                if (bestTime === null || ms < bestTime) {
-                    localStorage.setItem('bestTime', ms);
-                    var hours = Math.floor(ms / 1000 / 60 / 60);
-                    var mins = Math.floor(ms / 1000 / 60);
-                    var secs = Math.floor((ms / 1000) % 60);
-                    var tenths = Math.floor((ms / 100) % 10);
-                    if (hours < 10) {
-                        hours = "0" + hours;
-                    }
-                    if (mins < 10) {
-                        mins = "0" + mins;
-                    }
-                    if (secs < 10) {
-                        secs = "0" + secs;
-                    }
-                    document.querySelector('.bestTime').innerHTML = "Best Time: " + hours + ":" + mins + ":" + secs + ":" + tenths + "0";
+                if (bestTime === null || secondsTotal < bestTime) {
+                    localStorage.setItem('bestTime', secondsTotal);
+                    document.getElementById("bestTime").innerHTML = "Best Time: " + secondsToTime(secondsTotal);
                 }
             } else {
                 //play right sound
@@ -149,8 +117,6 @@ function playAgain() {
     flippedCouplesCount = 0;
     isProcessing = false;
     firstClick = true;
-    msStartTime = 0;
-    msEndTime = 0;
     //flip all the cards
     var cards = document.getElementsByClassName("card");
     for (var i = 0; i < cards.length; ++i) {
@@ -170,50 +136,73 @@ function shuffleCards() {
     }
 }
 
-var time = 0;
-var running = false;
+var seconds = 0;
+var minutes = 0;
+var hours = 0;
+var t;
+var secondsTotal = 0;
 
 function startTime() {
-    if (running === false) {
-        running = true;
-        incrementTime();
-        //} else {
-        //    running = 0;
-        //}
-    }
+    incrementTime();
 }
 
-
 function stopTime() {
-    running = false;
+    clearTimeout(t);
 }
 
 function resetTime() {
-    running = false;
-    time = 0;
-    document.getElementById("output").innerHTML = "Time: 00:00:00:00";
+    document.getElementById("output").innerHTML = "Time: 00:00:00";
+    seconds = 0;
+    minutes = 0;
+    hours = 0;
+    secondsTotal = 0;
 }
 
 function incrementTime() {
-    if (running === true) {
-        setTimeout(function () {
-            time++;
-            var hours = Math.floor(time / 10 / 60 / 60);
-            var mins = Math.floor(time / 10 / 60);
-            var secs = Math.floor(time / 10 % 60);
-            var tenths = time % 10;
-            if (hours < 10) {
-                hours = "0" + hours;
+    var seconds1 = 0;
+    var minutes1 = 0;
+    var hours1 = 0;
+    t = setTimeout(function () {
+        seconds++;
+        secondsTotal++;
+        if (seconds >= 60) {
+            seconds = 0;
+            minutes++;
+            if (minutes >= 60) {
+                minutes = 0;
+                hours++;
             }
-            if (mins < 10) {
-                mins = "0" + mins;
-            }
-            if (secs < 10) {
-                secs = "0" + secs;
-            }
-            document.getElementById("output").innerHTML = "Time: " + hours + ":" + mins + ":" + secs + ":" + tenths + "0";
-            incrementTime();
-        }, 100)
+        }
+        hours1 = hours;
+        minutes1 = minutes;
+        seconds1 = seconds;
+        if (hours1 < 10) {
+            hours1 = "0" + hours1;
+        }
+        if (minutes1 < 10) {
+            minutes1 = "0" + minutes1;
+        }
+        if (seconds1 < 10) {
+            seconds1 = "0" + seconds1;
+        }
+        document.getElementById("output").innerHTML = "Time: " + hours1 + ":" + minutes1 + ":" + seconds1;
+        incrementTime();
+    }, 1000)
+}
+
+function secondsToTime(seconds) {
+    var hrs = Math.floor(seconds / 60 / 60);
+    var mins = Math.floor(seconds / 60);
+    var secs = Math.floor(seconds % 60);
+    if (hrs < 10) {
+        hrs = "0" + hrs;
     }
+    if (mins < 10) {
+        mins = "0" + mins;
+    }
+    if (secs < 10) {
+        secs = "0" + secs;
+    }
+    return hrs + ":" + mins + ":" + secs;
 }
 
