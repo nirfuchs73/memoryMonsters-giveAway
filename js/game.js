@@ -29,7 +29,7 @@ var isProcessing = false;
 var firstClick = true;
 
 // This is a constant that we dont change during the game (we mark those with CAPITAL letters)
-var TOTAL_COUPLES_COUNT = 3;
+var TOTAL_COUPLES_COUNT = 8;
 
 // Load an audio file
 var audioWin = new Audio('sound/win.mp3');
